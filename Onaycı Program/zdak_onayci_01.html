@@ -1,0 +1,201 @@
+<!DOCTY "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xht />
+<title>ZDAK_ONAYCI_01</title>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for: ZDAK_ONAYCI_01</h2>
+<h3> Description: </h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="codeComment">
+*&---------------------------------------------------------------------*<br />
+*&&nbsp;Report&nbsp;ZDAK_ONAYCI_01<br />
+*&---------------------------------------------------------------------*<br />
+*&<br />
+*&---------------------------------------------------------------------*<br />
+   </div>
+   <div class="code">
+REPORT zdak_onayci_01.<br />
+TABLES : zdak_onaycý.<br />
+<br />
+TYPES : BEGIN OF gty_list,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z_persno_main&nbsp;TYPE&nbsp;zdak_persno_de,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z_persno&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;zdak_persno_de,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z_name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;zdak_persad_de,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z_surname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;zdak_persoyad_de,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z_approv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;zdak_onaycino_de,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;END&nbsp;OF&nbsp;gty_list.<br />
+<br />
+DATA :<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lt_t001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;TABLE&nbsp;OF&nbsp;gty_list,<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;lt_t001_main&nbsp;TYPE&nbsp;TABLE&nbsp;OF&nbsp;gty_list,<br />
+&nbsp;&nbsp;ls_t001_sub&nbsp;&nbsp;TYPE&nbsp;gty_list,<br />
+&nbsp;&nbsp;ls_t001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;gty_list.<br />
+<br />
+DATA: gt_list TYPE TABLE OF gty_list,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gs_list&nbsp;TYPE&nbsp;gty_list.<br />
+<br />
+DATA : gt_onaycý      TYPE TABLE OF zdak_onaycý,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gs_onaycý&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;zdak_onaycý,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gs_onaycý_main&nbsp;TYPE&nbsp;&nbsp;zdak_onaycino_de.<br />
+<br />
+<br />
+DATA : gt_fieldcatalog TYPE slis_t_fieldcat_alv, "fieldcat bir internal table<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gs_fieldcatalog&nbsp;TYPE&nbsp;slis_fieldcat_alv.<br />
+<br />
+<br />
+   </div>
+   <div class="codeComment">
+*gs_onaycý-z_persno&nbsp;=&nbsp;1000&nbsp;.<br />
+*gs_onaycý-z_name&nbsp;=&nbsp;'Cem'.<br />
+*gs_onaycý-z_surname&nbsp;=&nbsp;'Bastacý'.<br />
+*gs_onaycý-z_approverpersno&nbsp;=&nbsp;2000&nbsp;.<br />
+*MODIFY&nbsp;zdak_onaycý_t&nbsp;FROM&nbsp;gs_onaycý.<br />
+<br />
+   </div>
+   <div class="code">
+SELECT-OPTIONS s_persno FOR ls_t001-z_persno.<br />
+<br />
+START-OF-SELECTION.<br />
+<br />
+&nbsp;&nbsp;DATA&nbsp;lv_exit&nbsp;TYPE&nbsp;c.<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;&nbsp;DATA&nbsp;lv_tabix&nbsp;TYPE&nbsp;sy-tabix.<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;SELECT&nbsp;*&nbsp;FROM&nbsp;zdak_onaycý&nbsp;INTO&nbsp;CORRESPONDING&nbsp;FIELDS&nbsp;OF&nbsp;TABLE&nbsp;lt_t001_main<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHERE&nbsp;z_persno&nbsp;IN&nbsp;s_persno.<br />
+&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;lt_t001_main&nbsp;INTO&nbsp;ls_t001&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;&nbsp;&nbsp;&nbsp;lv_tabix&nbsp;=&nbsp;sy-tabix&nbsp;.<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;&nbsp;&nbsp;lv_exit&nbsp;=&nbsp;''.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ls_t001-z_persno_main&nbsp;=&nbsp;ls_t001-z_persno.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;ls_t001&nbsp;TO&nbsp;&nbsp;gt_list.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CLEAR:gs_onaycý_main.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;gs_onaycý_main&nbsp;=&nbsp;ls_t001-z_approv.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DO&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLEAR&nbsp;:&nbsp;ls_t001_sub.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT&nbsp;SINGLE&nbsp;*&nbsp;FROM&nbsp;zdak_onaycý&nbsp;INTO&nbsp;CORRESPONDING&nbsp;FIELDS&nbsp;OF<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ls_t001_sub&nbsp;WHERE&nbsp;z_persno&nbsp;EQ&nbsp;gs_onaycý_main&nbsp;.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;NE&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_exit&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ELSE.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gs_onaycý_main&nbsp;=&nbsp;ls_t001_sub-z_approv.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ls_t001_sub-z_persno_main&nbsp;=&nbsp;ls_t001-z_persno&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;ls_t001_sub&nbsp;TO&nbsp;&nbsp;gt_list.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;lv_exit&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EXIT.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDDO.<br />
+&nbsp;&nbsp;ENDLOOP.<br />
+<br />
+<br />
+   </div>
+   <div class="codeComment">
+***&nbsp;&nbsp;&nbsp;&nbsp;SELECT&nbsp;*&nbsp;FROM&nbsp;zdak_onaycý<br />
+***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTO&nbsp;CORRESPONDING&nbsp;FIELDS&nbsp;OF&nbsp;TABLE&nbsp;gt_list<br />
+***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FOR&nbsp;ALL&nbsp;ENTRIES&nbsp;IN&nbsp;lt_t001<br />
+***&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHERE&nbsp;z_persno&nbsp;EQ&nbsp;lt_t001-z_approv.<br />
+<br />
+<br />
+<br />
+<br />
+*&nbsp;&nbsp;SELECT&nbsp;*&nbsp;FROM&nbsp;zdak_onaycý<br />
+*&nbsp;&nbsp;INTO&nbsp;CORRESPONDING&nbsp;FIELDS&nbsp;OF&nbsp;TABLE&nbsp;gt_list<br />
+*&nbsp;&nbsp;FOR&nbsp;ALL&nbsp;ENTRIES&nbsp;IN&nbsp;lt_t001<br />
+*&nbsp;&nbsp;WHERE&nbsp;z_persno&nbsp;EQ&nbsp;lt_t001-z_approv.<br />
+<br />
+<br />
+<br />
+*data:&nbsp;lv_z_approv&nbsp;type&nbsp;zdak_onaycý-z_approv.<br />
+*select&nbsp;single&nbsp;z_approv&nbsp;from&nbsp;zdak_onaycý&nbsp;into&nbsp;lv_z_approv<br />
+*where&nbsp;z_persno&nbsp;eq&nbsp;gs_list-z_persno.<br />
+<br />
+<br />
+*data&nbsp;ls_t0011&nbsp;type&nbsp;zdak_onaycý.<br />
+*select&nbsp;single&nbsp;*&nbsp;from&nbsp;zdak_onaycý&nbsp;into&nbsp;ls_t0011<br />
+*&nbsp;&nbsp;where&nbsp;z_persno&nbsp;eq&nbsp;lv_z_approv.<br />
+<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;"simple&nbsp;case<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;&nbsp;IF&nbsp;gs_list-z_approverpersno&nbsp;=&nbsp;gs_list-z_persno&nbsp;&nbsp;.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;WRITE&nbsp;:&nbsp;&nbsp;gs_list-z_persno&nbsp;.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;gs_list-z_persno&nbsp;=&nbsp;0&nbsp;.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BREAK-POINT.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+*&nbsp;&nbsp;ENDIF.<br />
+<br />
+<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;PERFORM&nbsp;:&nbsp;&nbsp;"set_fc_sub&nbsp;USING&nbsp;'Z_PERSNO_MAIN'&nbsp;&nbsp;'PERSONEL&nbsp;NO'&nbsp;'PERSONEL&nbsp;NUMARASI'&nbsp;'PERSONEL&nbsp;NUMARASI'&nbsp;&nbsp;'X'&nbsp;'0'&nbsp;'',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_fc_sub&nbsp;USING&nbsp;'Z_PERSNO'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PERSONEL&nbsp;NO'&nbsp;'PERSONEL&nbsp;NUMARASI'&nbsp;'PERSONEL&nbsp;NUMARASI'&nbsp;&nbsp;'X'&nbsp;'0'&nbsp;'',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_fc_sub&nbsp;USING&nbsp;'Z_NAME'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PERSONEL&nbsp;ADI'&nbsp;'PERSONEL&nbsp;ADI'&nbsp;'PERSONEL&nbsp;ADI'&nbsp;&nbsp;''&nbsp;&nbsp;'1'&nbsp;'',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_fc_sub&nbsp;USING&nbsp;'Z_SURNAME'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PERSONEL&nbsp;SOYADI'&nbsp;'PERSONEL&nbsp;SOYADI'&nbsp;'PERSONEL&nbsp;SOYADI'&nbsp;''&nbsp;&nbsp;'2'&nbsp;'',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_fc_sub&nbsp;USING&nbsp;'Z_APPROV'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PERSONEL&nbsp;ONAYCI&nbsp;NUMARASI'&nbsp;'PERSONEL&nbsp;ONAYCI&nbsp;NUMARASI'&nbsp;'PERSONEL&nbsp;ONAYCI&nbsp;NUMARASI'&nbsp;&nbsp;''&nbsp;&nbsp;'3'&nbsp;''.<br />
+&nbsp;&nbsp;PERFORM&nbsp;:&nbsp;display_alv&nbsp;.<br />
+<br />
+FORM display_alv .<br />
+&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'REUSE_ALV_GRID_DISPLAY'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_callback_program&nbsp;=&nbsp;sy-repid<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_callback_pf_status_set&nbsp;=&nbsp;'PF_STATUS_SET'<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_callback_user_command&nbsp;&nbsp;=&nbsp;'USER_COMMAND'<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_callback_top_of_page&nbsp;&nbsp;&nbsp;=&nbsp;'TOP_OF_PAGE'<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is_layout&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;gs_layout<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_fieldcat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;gt_fieldcatalog<br />
+&nbsp;&nbsp;&nbsp;&nbsp;TABLES<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t_outtab&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;gt_list.<br />
+ENDFORM.<br />
+<br />
+FORM set_fc_sub USING p_fieldname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_seltext_s<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_seltext_m<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_seltext_l<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_key<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_col_pos<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_do_sum.<br />
+&nbsp;&nbsp;CLEAR:&nbsp;gs_fieldcatalog.<br />
+&nbsp;&nbsp;gs_fieldcatalog-fieldname&nbsp;=&nbsp;p_fieldname.<br />
+&nbsp;&nbsp;gs_fieldcatalog-seltext_s&nbsp;=&nbsp;p_seltext_s.<br />
+&nbsp;&nbsp;gs_fieldcatalog-seltext_M&nbsp;=&nbsp;p_seltext_m.<br />
+&nbsp;&nbsp;gs_fieldcatalog-seltext_L&nbsp;=&nbsp;p_seltext_l.<br />
+&nbsp;&nbsp;gs_fieldcatalog-key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;p_key.<br />
+&nbsp;&nbsp;gs_fieldcatalog-col_pos&nbsp;&nbsp;&nbsp;=&nbsp;p_col_pos.<br />
+&nbsp;&nbsp;gs_fieldcatalog-do_sum&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;p_do_sum.<br />
+&nbsp;&nbsp;APPEND&nbsp;gs_fieldcatalog&nbsp;TO&nbsp;gt_fieldcatalog.<br />
+ENDFORM.<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
